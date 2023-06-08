@@ -4,12 +4,12 @@ name: "mbpo"
 normalize: true
 normalize_double_precision: true
 target_is_delta: true
-learned_rewards: true
+learned_rewards: ${overrides.algorithm.learned_rewards}
 freq_train_model: ${overrides.freq_train_model}
-real_data_ratio: 0.0
+real_data_ratio: ${overrides.real_data_ratio}
 
 sac_samples_action: true
-initial_exploration_steps: 5000
+initial_exploration_steps: ${overrides.algorithm.initial_exploration_steps}
 random_initial_explore: false
 num_eval_episodes: 1
 

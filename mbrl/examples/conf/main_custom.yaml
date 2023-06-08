@@ -1,0 +1,21 @@
+defaults:
+  - algorithm: mbpo
+  - dynamics_model: gaussian_mlp_ensemble
+  - overrides: mbpo_custom
+
+seed: 0
+device: "cuda:0"
+log_frequency_agent: 1000
+save_video: true
+debug_mode: true
+use_wandb: true
+
+experiment: default
+
+root_dir: "./exp"
+hydra:
+  run:
+    dir: ${root_dir}/${algorithm.name}/${experiment}/${overrides.env}/${now:%Y.%m.%d}/${now:%H%M%S}
+
+  sweep:
+    dir: ${root_dir}/${algorithm.name}/${experiment}/${overrides.env}/${now:%Y.%m.%d}/${now:%H%M%S}
