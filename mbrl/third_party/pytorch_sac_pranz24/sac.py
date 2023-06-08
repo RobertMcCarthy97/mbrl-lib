@@ -11,6 +11,7 @@ from mbrl.third_party.pytorch_sac_pranz24.model import (
 )
 from mbrl.third_party.pytorch_sac_pranz24.utils import hard_update, soft_update
 
+from mbrl.util.custom_utils import get_grad_norm
 
 class SAC(object):
     def __init__(self, num_inputs, action_space, args):
@@ -163,6 +164,14 @@ class SAC(object):
             logger.log("train_actor/entropy", -log_pi.mean(), updates)
             logger.log("train_alpha/loss", alpha_loss, updates)
             logger.log("train_alpha/value", self.alpha, updates)
+            # custom
+            logger.log('train/updates', updates, updates)
+            logger.log('train/critic_grad_norm', get_grad_norm(self.critic), updates)
+            logger.log('train/policy_grad_norm', get_grad_norm(self.policy), updates)
+            logger.log('train_critic/qf1', qf1.mean(), updates)
+            logger.log('train_critic/qf2', qf2.mean(), updates)
+            logger.log('train_critic/qf1_next_target', qf1_next_target.mean(), updates)
+            logger.log('train_critic/qf2_next_target', qf2_next_target.mean(), updates)
 
         return (
             qf1_loss.item(),

@@ -284,7 +284,7 @@ class OneDTransitionRewardModel(Model):
             for dim in self.no_delta_list:
                 tmp_[:, dim] = next_observs[:, dim]
             next_observs = tmp_
-        rewards = preds[:, -1:] if self.learned_rewards else None
+        rewards = preds[:, -1:] if self.learned_rewards else None # (B, 1)
         next_model_state["obs"] = next_observs
         return next_observs, rewards, None, next_model_state
 

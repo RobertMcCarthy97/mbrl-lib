@@ -78,6 +78,7 @@ class ModelTrainer:
         batch_callback: Optional[Callable] = None,
         evaluate: bool = True,
         silent: bool = False,
+        env_steps: Optional[int] = None,
     ) -> Tuple[List[float], List[float]]:
         """Trains the model for some number of epochs.
 
@@ -191,6 +192,7 @@ class ModelTrainer:
                         "model_best_val_score": best_val_score.mean()
                         if best_val_score is not None
                         else 0,
+                        "env_step": env_steps,
                     },
                 )
             if callback:
