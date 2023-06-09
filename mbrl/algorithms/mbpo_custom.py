@@ -30,8 +30,13 @@ MBPO_LOG_FORMAT = mbrl.constants.EVAL_LOG_FORMAT + [
 ]
 
 """
-# TODO:
-- Norm agent observations
+Causes of instability candidates:
+- SAC implementation
+- Refreshing replay buffer without diverse data
+- Lack of normalization of agent inputs
+- Lack of normalization of model delta outputs
+- Learning from stale data (update model multiple times before refresh buffer)
+- No use of real data when training agent
 
 """
 
@@ -152,8 +157,9 @@ def train(
     act_shape = env.action_space.shape
 
     mbrl.planning.complete_agent_cfg(env, cfg.algorithm.agent)
+    agent_class = cfg.algorithm.agent._target_
     agent = SACAgent(
-        cast(pytorch_sac_pranz24.SAC, hydra.utils.instantiate(cfg.algorithm.agent))
+        cast(agent_class, hydra.utils.instantiate(cfg.algorithm.agent))
     )
 
     work_dir = work_dir or os.getcwd()
@@ -167,7 +173,7 @@ def train(
     )
     custom_log_handler = CustomLogHandler(logger)
     save_video = cfg.get("save_video", False)
-    video_recorder = VideoRecorder(work_dir if save_video else None)
+    video_recorder = VideoRecorder(work_dir if save_video else None, use_wandb=cfg.use_wandb)
 
     rng = np.random.default_rng(seed=cfg.seed)
     torch_generator = torch.Generator(device=cfg.device)
@@ -339,8 +345,9 @@ def train(
                         "rollout_length": rollout_length,
                     },
                 )
+                video_recorder.save(f"{epoch}.mp4")
                 if avg_reward > best_eval_reward:
-                    video_recorder.save(f"{epoch}.mp4")
+                    video_recorder.save(f"best_eval_{epoch}.mp4")
                     best_eval_reward = avg_reward
                     agent.sac_agent.save_checkpoint(
                         ckpt_path=os.path.join(work_dir, "sac.pth")

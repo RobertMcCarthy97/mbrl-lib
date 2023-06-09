@@ -30,13 +30,13 @@ sac_batch_size: 256
 algorithm:
   learned_rewards: false
   initial_exploration_steps: 5000
-  random_initial_explore: false
+  random_initial_explore: true
 
 dynamics_model:
   ensemble_size: 5
 
 agent:
-  _target_: mbrl.third_party.pytorch_sac_pranz24.sac.SAC
+  _target_: mbrl.third_party.pytorch_sac_pranz24.td3.TD3 # mbrl.third_party.pytorch_sac_pranz24.sac.SAC , mbrl.third_party.pytorch_sac_pranz24.td3.TD3
 
 # real only params
 do_imag_training: false

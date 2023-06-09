@@ -10,14 +10,14 @@ real_data_ratio: ${overrides.real_data_ratio}
 
 sac_samples_action: true
 initial_exploration_steps: ${overrides.algorithm.initial_exploration_steps}
-random_initial_explore: false
+random_initial_explore: ${overrides.algorithm.random_initial_explore}
 num_eval_episodes: 1
 
 # --------------------------------------------
 #          SAC Agent configuration
 # --------------------------------------------
 agent:
-  _target_: mbrl.third_party.pytorch_sac_pranz24.sac.SAC
+  _target_: ${overrides.agent._target_}
   num_inputs: ???
   action_space:
     _target_: gym.env.Box
