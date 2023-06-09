@@ -77,7 +77,7 @@ class DeterministicPolicy(nn.Module):
         mean = self.forward(state)
         noise = self.noise.normal_(0.0, std=0.1)
         noise = noise.clamp(-0.25, 0.25)
-        action = mean + noise
+        action = (mean + noise).clamp(-1.0, 1.0) # TODO: undo clamp wtihout check action space!
         return action, torch.tensor(0.0), mean
 
     def to(self, device):
