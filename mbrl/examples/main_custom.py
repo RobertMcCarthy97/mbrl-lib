@@ -63,7 +63,7 @@ def make_env(cfg):
     env = make_env_inner(
             manual_decompose_p=1,
             dense_rew_lowest=False,
-            dense_rew_tasks=['move_gripper_to_cube'], #
+            dense_rew_tasks=['move_gripper_to_cube', 'move_cube_towards_target_grasp'], #
             use_language_goals=False,
             render_mode='rgb_array',
             max_ep_len=50,

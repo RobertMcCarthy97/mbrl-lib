@@ -64,7 +64,7 @@ class DeterministicPolicy(nn.Module):
         else:
             high = np.array(action_space.high)
             low = np.array(action_space.low)
-            # assert high == -low == 1.0 # TODO:
+            assert np.all(high == 1.0) and np.all(low == -1.0) # action clamp below assumes this
             self.action_scale = torch.FloatTensor((high - low) / 2.0)
             self.action_bias = torch.FloatTensor((high + low) / 2.0)
 
@@ -78,7 +78,7 @@ class DeterministicPolicy(nn.Module):
         mean = self.forward(state)
         noise = self.noise.normal_(0.0, std=0.1)
         noise = noise.clamp(-0.25, 0.25) # TODO: 0.1 seemed to perform better for move_cube2target...
-        action = (mean + noise).clamp(-1.0, 1.0) # TODO: undo clamp wtihout check action space!
+        action = (mean + noise).clamp(-1.0, 1.0)
         return action, torch.tensor(0.0), mean
 
     def to(self, device):
