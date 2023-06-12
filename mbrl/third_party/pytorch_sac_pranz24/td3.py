@@ -37,8 +37,8 @@ class TD3(object):
         # policy
         self.policy = DeterministicPolicy(num_inputs, action_space.shape[0], args.hidden_size, action_space).to(self.device)
         self.policy_optim = Adam(self.policy.parameters(), lr=args.lr)
-        self.policy_target = DeterministicPolicy(num_inputs, action_space.shape[0], args.hidden_size, action_space).to(self.device)
-        hard_update(self.policy_target, self.policy)
+        # self.policy_target = DeterministicPolicy(num_inputs, action_space.shape[0], args.hidden_size, action_space).to(self.device)
+        # hard_update(self.policy_target, self.policy)
 
     def select_action(self, state, batched=False, evaluate=False):
         state = torch.FloatTensor(state)
@@ -75,7 +75,7 @@ class TD3(object):
             mask_batch = mask_batch.logical_not()
 
         with torch.no_grad():
-            next_state_action, _, _ = self.policy_target.sample(
+            next_state_action, _, _ = self.policy.sample(
                 next_state_batch
             )
             qf1_next_target, qf2_next_target = self.critic_target(
@@ -112,7 +112,7 @@ class TD3(object):
 
         if updates % self.target_update_interval == 0:
             soft_update(self.critic_target, self.critic, self.tau)
-            soft_update(self.policy_target, self.policy, self.tau)
+            # soft_update(self.policy_target, self.policy, self.tau)
 
         if logger is not None:
             logger.log("train/batch_reward", reward_batch.mean(), updates)
